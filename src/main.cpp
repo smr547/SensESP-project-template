@@ -17,15 +17,18 @@
 
 using namespace sensesp;
 
+reactesp::ReactESP app;
+
 // The setup function performs one-time application initialization.
 void setup() {
-  SetupLogging();
+  // SetupLogging();
+  SetupSerialDebug(115200);
 
   // Construct the global SensESPApp() object
   SensESPAppBuilder builder;
-  sensesp_app = (&builder)
+  sensesp_app = builder
                     // Set a custom hostname for the app.
-                    ->set_hostname("my-sensesp-project")
+                    .set_hostname("my-sensesp-project")
                     // Optionally, hard-code the WiFi and Signal K server
                     // settings. This is normally not needed.
                     //->set_wifi("My WiFi SSID", "my_wifi_password")
@@ -56,10 +59,10 @@ void setup() {
   const uint8_t kDigitalOutputPin = 15;
   const unsigned int kDigitalOutputInterval = 650;
   pinMode(kDigitalOutputPin, OUTPUT);
-  SensESPBaseApp::get_event_loop()->onRepeat(
-      kDigitalOutputInterval, [kDigitalOutputPin]() {
-        digitalWrite(kDigitalOutputPin, !digitalRead(kDigitalOutputPin));
-      });
+  //   SensESPBaseApp::get_event_loop()->onRepeat(
+  //       kDigitalOutputInterval, [kDigitalOutputPin]() {
+  //         digitalWrite(kDigitalOutputPin, !digitalRead(kDigitalOutputPin));
+  //       });
 
   // Read GPIO 14 every time it changes
 
@@ -115,6 +118,11 @@ void setup() {
       new SKMetadata("",                       // No units for boolean values
                      "Digital input 2 value")  // Value description
       ));
+
+  sensesp_app->start();
 }
 
-void loop() { SensESPBaseApp::get_event_loop()->tick(); }
+void loop() {
+  // SensESPBaseApp::get_event_loop()->tick();
+  app.tick();
+}
